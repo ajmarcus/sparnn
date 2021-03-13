@@ -1,0 +1,5 @@
+annoy==1.17.0
+google-cloud-storage==1.36.2
+numpy==1.19.5
+tensorboard==2.4.1
+tensorflow==2.4.1
