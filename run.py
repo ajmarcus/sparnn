@@ -6,7 +6,10 @@ import json
 from os import mkdir, path, remove
 from sparnn.config import DEBUG, VECTOR_SIZE
 from sparnn import prep
+from time import time
 from typing import Dict, List
+
+START_TIME = int(time())
 
 num_rows = 0
 num_files = 0
@@ -20,6 +23,12 @@ uris: Dict[str, int] = {}
 uri_index: List[str] = []
 uri_tree = AnnoyIndex(VECTOR_SIZE, "angular")
 
+
+def log(message: str) -> str:
+    hours = "{:.4f}".format((int(time()) - START_TIME) * 1.0 / (60 * 60))
+    return f"{hours}h: {message}"
+
+
 if __name__ == "__main__":
     print(f"DEBUG: ({DEBUG})")
     if not path.exists(f"./data"):
@@ -30,7 +39,7 @@ if __name__ == "__main__":
     blobs = [blob for blob in storage.Client().list_blobs("sparnn")]
     with open("./data/prep/examples.csv", mode="w", encoding="utf-8") as f:
         for blob in blobs:
-            if DEBUG and num_files >= 10:
+            if DEBUG and num_files >= 1:
                 break
             filename = prep.download(blob)
             if filename is not None:
@@ -76,11 +85,11 @@ if __name__ == "__main__":
                     f.write(f"{row}\n")
                     num_rows += 1
                     if num_rows % 10000 == 0:
-                        print(f"wrote {num_rows} rows")
+                        print(log(f"wrote {num_rows} rows"))
                 num_files += 1
                 remove(filename)
                 if num_files % 10 == 0:
-                    print(f"read {num_files} files")
+                    print(log(f"read {num_files} files"))
 
     uri_tree.build(1000)
     uri_tree.save("./data/prep/uri.ann")

@@ -5,7 +5,7 @@ from random import randint
 from os import mkdir, path
 from typing import Generator, List, NamedTuple, Optional, Tuple
 
-BLOB_PREFIX = "user_play_vector/"
+BLOB_PREFIX = "user_play/"
 PRIOR_PLAYS = 5
 SESSION_SPLIT_SECS = 30 * 60  # session defined as 30 minutes of inactivity
 
@@ -81,7 +81,7 @@ def find_session(plays) -> Optional[Tuple[List[TrackPlay], TrackPlay]]:
 
 
 def parse(filename) -> Generator[Session, None, None]:
-    with gzip.open(filename, mode="rt", encoding="utf-8") as f:
+    with open(filename, mode="r", encoding="utf-8") as f:
         for line in f:
             row = json.loads(line)
             user_size = len(row["user_vector"])
