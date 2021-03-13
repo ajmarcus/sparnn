@@ -21,6 +21,7 @@ uri_index: List[str] = []
 uri_tree = AnnoyIndex(VECTOR_SIZE, "angular")
 
 if __name__ == "__main__":
+    print(f"DEBUG: ({DEBUG})")
     if not path.exists(f"./data"):
         mkdir(f"./data")
     if not path.exists(f"./data/prep"):
@@ -81,8 +82,7 @@ if __name__ == "__main__":
                 if num_files % 10 == 0:
                     print(f"read {num_files} files")
 
-    num_trees = round(len(uri_index) / 1000.0) + 1
-    uri_tree.build(num_trees)
+    uri_tree.build(1000)
     uri_tree.save("./data/prep/uri.ann")
 
     with open("./data/prep/uri.txt", mode="w", encoding="utf-8") as f:
